@@ -1,0 +1,8 @@
+Please answer the questions using the file as data source. You can use any language and any technology, spark transformations would be preferable.
+ 
+1.      Number of users per country per state.
+2.      Total revenue per City.
+3.      Total revenue per day per product
+4.      Number of transactions per name
+5.      Revenue per day of Product 1 from United States
+6.      Any useful data insight you can give from the dataset.
