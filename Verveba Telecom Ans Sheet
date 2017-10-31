@@ -1,0 +1,39 @@
+import org.apache.spark._
+import org.apache.spark.sql.{SQLContext,SparkSession}
+
+Object DataFramTest{
+		def main(args:Array[String]):Unit={
+		
+		val spark = SparkSession.builder.master("local").getOrCreate()
+		
+		val textFile = spark.read.csv("/home/rajka/prescreening.csv")
+		
+		textFile.createOrReplaceTempView("users")
+		
+		//Problem Statement 1- Number of users per country per state.
+		val ps1 = spark.sql("select country,state,count(name) from users group by country,state")
+
+		ps1.write.text.csv("/home/rajka/ps1/")
+		
+		//Problem Statement 2- Total revenue per City.
+		val ps2 = spark.sql("select city,sum(price) from users group by city")
+		
+		ps1.write.text.csv("/home/rajka/ps2/")
+		
+		//Problem Statement 3- Total revenue per day per product.
+		val ps3 = spark.sql("select PD,Product,SUM(Price) from (select from_unixtime(unix_timestamp(Transaction_date,'MM/dd/yyyy'),'yyyy-MM-dd') as PD,Product,Price from users)v group by PD,Product")
+		
+		ps3.write.text.csv("/home/rajka/ps3/")
+		
+		//Problem Statement 4- Number of transactions per name.
+		val ps4 = spark.sql("select count(Transaction_date),UN from (select Transaction_date,UPPER(name) as UN from users)v group by UN order by UN DESC")
+		
+		ps4.write.text.csv("/home/rajka/ps4/")
+		
+		//Problem Statement 5- Revenue per day of Product 1 from United States.
+		val ps5 = spark.sql("select PD,Product,SUM(Price),Country from (select from_unixtime(unix_timestamp(Transaction_date,'MM/dd/yyyy'),'yyyy-MM-dd') as PD,Product,Price,Country from users where Product like 'Product1' and Country like 'United States')v group by PD,Product,Country")
+		
+		ps5.write.text.csv("/home/rajka/ps5/")
+		
+		}
+	}
